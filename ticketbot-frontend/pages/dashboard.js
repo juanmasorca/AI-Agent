@@ -1,22 +1,19 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export default function Dashboard() {
   const [tickets, setTickets] = useState([])
   const [agent, setAgent] = useState(null)
-  const router = useRouter()
 
   useEffect(() => {
     async function load() {
-      // Obtener sesión
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
         window.location.href = '/login'
         return
       }
 
-      // Obtener agente (vinculado con auth.users)
       const { data: agentData } = await supabase
         .from('agents')
         .select('*')
@@ -27,10 +24,11 @@ export default function Dashboard() {
 
       if (!agentData) return
 
-      let query = supabase.from('tickets').select('*').order('created_at', { ascending: false })
+      let query = supabase.from('tickets')
+        .select('*')
+        .order('created_at', { ascending: false })
 
       if (agentData.role !== 'admin') {
-        // Agentes ven solo sus tickets
         query = query.eq('assigned_agent_id', agentData.id)
       }
 
@@ -41,27 +39,38 @@ export default function Dashboard() {
     load()
   }, [])
 
-  if (!agent) return <p>Cargando...</p>
+  if (!agent) return <p className="text-center mt-10">Cargando...</p>
 
   return (
-    <div style={{ maxWidth: 800, margin: '20px auto' }}>
-      <h1>Tickets asignados</h1>
-      <ul>
+    <div className="max-w-4xl mx-auto mt-10 px-4">
+      <h1 className="text-2xl font-bold mb-6">🎫 Tickets asignados</h1>
+      <div className="space-y-4">
         {tickets.map((t) => (
-          <li key={t.id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: 10 }}>
-            <strong>{t.category} / {t.priority}</strong>
-            <p>{t.ai_summary || t.message_text}</p>
-            <small>{new Date(t.created_at).toLocaleString()}</small>
-            <br />
-            <button
-              style={{ marginTop: 8, padding: '5px 10px', cursor: 'pointer' }}
-              onClick={() => router.push(`/ticket/${t.id}`)}
-            >
-              Ver historial
-            </button>
-          </li>
+          <div 
+            key={t.id} 
+            className="bg-white shadow rounded-lg p-4 border border-gray-200"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-semibold text-blue-600">
+                {t.category} / {t.priority}
+              </span>
+              <span className="text-sm text-gray-500">
+                {new Date(t.created_at).toLocaleString()}
+              </span>
+            </div>
+            <p className="text-gray-700">{t.ai_summary || t.message_text}</p>
+            
+            <div className="mt-3 text-right">
+              <Link 
+                href={`/ticket/${t.id}`} 
+                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition"
+              >
+                Ver historial 💬
+              </Link>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
