@@ -28,6 +28,7 @@ export default function TicketDetail() {
           }
         }
       })
+
       setChatHistory(parsed)
     }
 
@@ -35,28 +36,34 @@ export default function TicketDetail() {
   }, [id])
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 px-4">
-      <button 
-        onClick={() => router.back()} 
-        className="mb-4 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition"
+    <div className="max-w-2xl mx-auto p-6">
+      <button
+        onClick={() => router.back()}
+        className="mb-4 text-sm text-gray-500 hover:text-gray-700"
       >
-        ⬅ Volver
+        ← Volver
       </button>
-
-      <h1 className="text-xl font-bold mb-6">💬 Historial del Ticket</h1>
       
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">💬 Historial de Chat</h1>
+
       <div className="space-y-4">
         {chatHistory.map((msg, i) => (
-          <div 
-            key={i} 
-            className={`p-3 rounded-lg max-w-xs ${
-              msg.sender === 'user' 
-                ? 'bg-gray-200 self-start text-left' 
-                : 'bg-blue-500 text-white self-end ml-auto text-right'
-            }`}
+          <div
+            key={i}
+            className={`flex ${msg.sender === 'user' ? 'justify-start' : 'justify-end'}`}
           >
-            <p><strong>{msg.sender === 'user' ? 'Usuario' : 'Agente'}:</strong> {msg.text}</p>
-            <small className="block mt-1 text-xs opacity-70">{new Date(msg.created_at).toLocaleString()}</small>
+            <div
+              className={`max-w-xs p-3 rounded-lg shadow 
+                ${msg.sender === 'user'
+                  ? 'bg-gray-100 text-gray-800'
+                  : 'bg-blue-500 text-white'
+                }`}
+            >
+              <p className="text-sm">{msg.text}</p>
+              <small className="block mt-1 text-xs opacity-70">
+                {new Date(msg.created_at).toLocaleTimeString()}
+              </small>
+            </div>
           </div>
         ))}
       </div>
