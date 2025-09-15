@@ -47,10 +47,10 @@ export default function TicketDetail() {
 
       <div className="mt-6">
         <a
-          href={`/ticket/${ticket.id}/history`}
+          href={`/${ticket.id}/history`}
           className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
         >
-          Ver detalle →
+          Ver historial del chat →
         </a>
       </div>
     </div>
