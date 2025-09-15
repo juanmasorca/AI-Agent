@@ -5,35 +5,25 @@ import { supabase } from '../../lib/supabaseClient'
 export default function TicketDetail() {
   const router = useRouter()
   const { id } = router.query
-  const [chatHistory, setChatHistory] = useState([])
+  const [ticket, setTicket] = useState(null)
 
   useEffect(() => {
     if (!id) return
 
-    async function loadChat() {
-      const { data } = await supabase
-        .from('chat_history')
-        .select('message_text, created_at')
-        .eq('ticket_id', id)
-        .order('created_at', { ascending: true })
+    async function loadTicket() {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('id', id)
+        .single()
 
-      const parsed = []
-      data?.forEach(row => {
-        const parts = row.message_text.split(/- (user|agent):/).filter(Boolean)
-        for (let i = 0; i < parts.length; i += 2) {
-          const sender = parts[i].trim()
-          const text = (parts[i + 1] || '').trim()
-          if (sender && text) {
-            parsed.push({ sender, text, created_at: row.created_at })
-          }
-        }
-      })
-
-      setChatHistory(parsed)
+      if (!error) setTicket(data)
     }
 
-    loadChat()
+    loadTicket()
   }, [id])
+
+  if (!ticket) return <p className="text-center text-gray-500">Cargando...</p>
 
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -43,29 +33,25 @@ export default function TicketDetail() {
       >
         ← Volver
       </button>
-      
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">💬 Historial de Chat</h1>
 
-      <div className="space-y-4">
-        {chatHistory.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.sender === 'user' ? 'justify-start' : 'justify-end'}`}
-          >
-            <div
-              className={`max-w-xs p-3 rounded-lg shadow 
-                ${msg.sender === 'user'
-                  ? 'bg-gray-100 text-gray-800'
-                  : 'bg-blue-500 text-white'
-                }`}
-            >
-              <p className="text-sm">{msg.text}</p>
-              <small className="block mt-1 text-xs opacity-70">
-                {new Date(msg.created_at).toLocaleTimeString()}
-              </small>
-            </div>
-          </div>
-        ))}
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">📄 Detalle del Ticket</h1>
+
+      <div className="bg-white shadow rounded-lg p-4 space-y-3 border border-gray-200">
+        <p><strong>Categoría:</strong> {ticket.category}</p>
+        <p><strong>Prioridad:</strong> {ticket.priority}</p>
+        <p><strong>Mensaje:</strong> {ticket.ai_summary || ticket.message_text}</p>
+        <p className="text-sm text-gray-400">
+          Creado: {new Date(ticket.created_at).toLocaleString()}
+        </p>
+      </div>
+
+      <div className="mt-6">
+        <a
+          href={`/ticket/${ticket.id}/history`}
+          className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          Ver detalle →
+        </a>
       </div>
     </div>
   )
