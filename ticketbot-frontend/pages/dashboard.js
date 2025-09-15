@@ -57,7 +57,7 @@ export default function Dashboard() {
               style={{ marginTop: 8, padding: '5px 10px', cursor: 'pointer' }}
               onClick={() => router.push(`/ticket/${t.id}`)}
             >
-              Ver historial
+              Ver historial del ticket
             </button>
           </li>
         ))}
