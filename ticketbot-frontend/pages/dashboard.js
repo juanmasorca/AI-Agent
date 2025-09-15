@@ -12,7 +12,7 @@ export default function Dashboard() {
       // Obtener sesión
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        window.location.href = '/login'
+        window.location.href = '/'
         return
       }
 
