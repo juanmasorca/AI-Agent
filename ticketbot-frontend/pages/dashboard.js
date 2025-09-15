@@ -5,6 +5,7 @@ export default function TicketDetail() {
       <div className="bg-white dark:bg-gray-900 shadow-md rounded-xl p-6 border border-gray-200 dark:border-gray-700">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
           📒 Tickets asignados
+          
         </h1>
 
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
@@ -16,6 +17,7 @@ export default function TicketDetail() {
         <p className="mt-4 text-gray-700 dark:text-gray-300">
           El usuario reporta dolor en la mano.
         </p>
+        <p className="text-red-500 font-bold">Hola Tailwind</p>
 
         <p className="mt-2 text-sm text-gray-500">
           📅 14/9/2025, 21:08:44
