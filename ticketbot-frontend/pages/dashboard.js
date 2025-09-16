@@ -116,14 +116,19 @@ return (
           <table className="min-w-full bg-white rounded-xl shadow-sm border border-gray-200">
   <thead className="bg-gray-100">
     <tr>
-      {["category", "priority", "ai_summary", "created_at"].map((col) => (
+      {[
+        { key: "category", label: "Categoría" },
+        { key: "priority", label: "Prioridad" },
+        { key: "ai_summary", label: "Resumen AI" },
+        { key: "created_at", label: "Fecha de creación" },
+      ].map((col) => (
         <th
-          key={col}
-          onClick={() => requestSort(col)}
+          key={col.key}
+          onClick={() => requestSort(col.key)}
           className="text-center px-4 py-2 border-b border-gray-200 cursor-pointer text-gray-800"
         >
-          {col.replace("_", " ").toUpperCase()}
-          {sortConfig.key === col ? (sortConfig.direction === "asc" ? " 🔼" : " 🔽") : ""}
+          {col.label}
+          {sortConfig.key === col.key ? (sortConfig.direction === "asc" ? " 🔼" : " 🔽") : ""}
         </th>
       ))}
       <th className="text-center px-4 py-2 border-b border-gray-200 text-gray-800">Acciones</th>
@@ -158,6 +163,7 @@ return (
     ))}
   </tbody>
 </table>
+
 
 
         </>
